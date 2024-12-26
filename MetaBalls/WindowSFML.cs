@@ -8,7 +8,7 @@ namespace MetaBalls;
 
 internal class WindowSFML
 {
-	private byte[] BUFFER = new byte[WINDOW_HEIGHT*WINDOW_WIDTH*4];
+	private byte[] BUFFER = new byte[RENDER_H*RENDER_W*4];
 	private Random RANDOM = new Random();
 	private List<Circle> METABALLS = new List<Circle>();
 	
@@ -31,12 +31,17 @@ internal class WindowSFML
 		};
 		
 		//Texture & Sprite
-		Texture tex = new Texture(WINDOW_WIDTH, WINDOW_HEIGHT);
+		Texture tex = new Texture(RENDER_W, RENDER_H);
 		Sprite sprite = new Sprite(tex);
-		
-		for (int i = 0; i < 5; i++)
+		sprite.Scale = new Vector2f
 		{
-			var circle = new Circle(new Vector2(0.0f, 0.0f), 0.05f);
+			X = (float)WINDOW_WIDTH / RENDER_W,
+			Y = (float)WINDOW_HEIGHT / RENDER_H
+		};
+		
+		for (int i = 0; i < 6; i++)
+		{
+			var circle = new Circle(new Vector2(0.0f, 0.0f), 0.06f);
 			circle.DirectionX = RANDOM.Next(-5, 6) / 500.0f;
 			circle.DirectionY = RANDOM.Next(-5, 6) / 500.0f;
 			METABALLS.Add(circle);
@@ -51,9 +56,9 @@ internal class WindowSFML
 			Array.Fill<byte>(BUFFER, 0);
 			
 			//Byte Array
-			Parallel.For(0, WINDOW_HEIGHT, new ParallelOptions {MaxDegreeOfParallelism = 4}, (row) => 
+			Parallel.For(0, RENDER_H, new ParallelOptions {MaxDegreeOfParallelism = 2}, (row) => 
 			{
-				for(int col = 0; col < WINDOW_WIDTH; col++)
+				for(int col = 0; col < RENDER_W; col++)
 				{
 					DrawMetaBall(row, col);
 				}
@@ -65,7 +70,7 @@ internal class WindowSFML
 			window.Draw(fpsText);
 			window.Display();
 			
-			//Update MetaBalls
+			// Update MetaBalls
 			foreach (Circle metaBall in METABALLS)
 			{
 				UpdateMetaBall(metaBall);
@@ -79,8 +84,8 @@ internal class WindowSFML
 	
 	private void DrawMetaBall(int row, int col)
 	{
-		var pixNormX = (col / (float)WINDOW_WIDTH_HALF) - 1;
-		var pixNormY = (row / (float)WINDOW_HEIGHT_HALF) - 1;
+		var pixNormX = WINDOW_ASPECT * ((col / ((float)RENDER_W / 2)) - 1);
+		var pixNormY = (row / ((float)RENDER_H / 2)) - 1;
 		
 		float sum = 0.0f;
 		
@@ -94,23 +99,23 @@ internal class WindowSFML
 		sum = 1 - sum;
 		
 		Color color;
-		if (sum <= 0.1f)
+		if (sum <= 0.02f)
 			color = Color.White;
-		else if (sum <= 0.3f)
+		else if (sum <= 0.15f)
 			color = Color.Red;
-		else if (sum <= 0.4f)
+		else if (sum <= 0.25f)
 			color = Color.Yellow;
-		else if (sum <= 0.5f)
+		else if (sum <= 0.35f)
 			color = Color.Green;
-		else if (sum <= 0.6)
+		else if (sum <= 0.40)
 			color = Color.Blue;
 		else
 			color = Color.Black;
 		
-		BUFFER[(row * WINDOW_WIDTH * 4) + (col * 4) + 0] = color.R;
-		BUFFER[(row * WINDOW_WIDTH * 4) + (col * 4) + 1] = color.G;
-		BUFFER[(row * WINDOW_WIDTH * 4) + (col * 4) + 2] = color.B;
-		BUFFER[(row * WINDOW_WIDTH * 4) + (col * 4) + 3] = color.A;
+		BUFFER[(row * RENDER_W * 4) + (col * 4) + 0] = color.R;
+		BUFFER[(row * RENDER_W * 4) + (col * 4) + 1] = color.G;
+		BUFFER[(row * RENDER_W * 4) + (col * 4) + 2] = color.B;
+		BUFFER[(row * RENDER_W * 4) + (col * 4) + 3] = color.A;
 	}
 	
 	private void UpdateMetaBall(Circle metaBall)

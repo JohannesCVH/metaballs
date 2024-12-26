@@ -2,9 +2,12 @@
 
 internal static class Constants
 {
-	public const int WINDOW_WIDTH = 720;
-	public const int WINDOW_HEIGHT = 720;
+	public const int WINDOW_WIDTH = 1920;
+	public const int WINDOW_HEIGHT = 1080;
 	public const int WINDOW_WIDTH_HALF = WINDOW_WIDTH / 2;
 	public const int WINDOW_HEIGHT_HALF = WINDOW_HEIGHT / 2;
-	public const float WINDOW_ASPECT = (float)WINDOW_HEIGHT / WINDOW_WIDTH;
+	public const float WINDOW_ASPECT = (float)WINDOW_WIDTH / WINDOW_HEIGHT;
+	
+	public const int RENDER_W = WINDOW_WIDTH / 3;
+	public const int RENDER_H = WINDOW_HEIGHT / 3;
 }
