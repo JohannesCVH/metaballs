@@ -20,7 +20,11 @@ internal class WindowSFML
 		window.SetVerticalSyncEnabled(true);
 		window.KeyPressed += Window_KeyPressed;
 
-		Font font = new Font("/usr/share/fonts/google-noto/NotoSans-Black.ttf");
+		string fontPath = Path.Combine(
+			AppDomain.CurrentDomain.BaseDirectory,
+			"Fonts/open-sans/OpenSans-Regular.ttf"
+		);
+		Font font = new Font(fontPath);
 		
 		//FPS
 		var clock = new Clock();
@@ -56,7 +60,7 @@ internal class WindowSFML
 			Array.Fill<byte>(BUFFER, 0);
 			
 			//Byte Array
-			Parallel.For(0, RENDER_H, new ParallelOptions {MaxDegreeOfParallelism = 2}, (row) => 
+			Parallel.For(0, RENDER_H, new ParallelOptions {MaxDegreeOfParallelism = 3}, (row) => 
 			{
 				for(int col = 0; col < RENDER_W; col++)
 				{
